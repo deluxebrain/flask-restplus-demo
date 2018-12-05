@@ -24,5 +24,4 @@ pipenv install flask
 ```
 
 
-- gitignore
 - restplus 
