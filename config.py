@@ -2,7 +2,8 @@ import logging.config
 import os
 
 class Config(object):
-    LOGGING_CONFIG_FILE = 'logging_config.ini'    
+    SERVER_NAME = 'localhost:5000'
+    LOGGING_CONFIG_FILE = 'logging_config.ini'
     SWAGGER_UI_DOC_EXPANSION = 'list'
     RESTPLUS_VALIDATE = True
     RESTPLUS_MASK_SWAGGER = False
@@ -17,8 +18,6 @@ class Config(object):
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    LOGGING_CONFIG_FILE = 'logging_config.ini'    
-    SERVER_NAME = 'localhost:8888'
 
 config_map = {
     'development': DevelopmentConfig,

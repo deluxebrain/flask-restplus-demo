@@ -5,7 +5,7 @@ from flask import Flask
 from config import config_map
 
 def create_app(config_name):
-    
+
     # get the corresponding config
     config = config_map[config_name]
 
