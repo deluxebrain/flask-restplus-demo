@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='workshop-1'
+    name='workshop-1',
     version='1.0.0',
     description='Python workshop 1',
     url='',
@@ -21,7 +21,8 @@ setup(
     install_requires=[
         'flask~=1.0.2',
         'flask-restplus~=0.12.1',
-        'python-dotenv~=0.9.1'
+        'python-dotenv~=0.9.1',
+        'flask-marshmallow~=0.9.0'
     ],
 )
 
