@@ -1,21 +1,3 @@
-```sh
-sudo add-apt-repository -y ppa:deadsnakes/ppa
-sudo apt update -y
-sudo apt-get install -y python 3.7
-ls -al /usr/bin/python*
-python3.7 --version
-```
+# flask-restplus-demo
 
-# ~=
-# Compatible release
-# ~= a.b.c --> a.b.*
-# ~= a.b --> a.*
-pipenv install flask~=1.0.2
-touch .env # autoloaded by pipenv shell and pipenv run
-
-# vagrant
-
-plugins
-vagrant plugin install vagrant-vbguest
-vagrant snapshot save <name>
-vagrant snapshot restore --no-provision <name>
+Quick demo of using Flask, Flask-RestPlus and Flask-Marshmallow to deliver a RESTful Web api.

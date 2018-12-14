@@ -8,10 +8,11 @@ class UserSchema(ma.Schema):
     class Meta:
         additional = ('id',
             'first_name',
-            'last_name'
+            'last_name',
+            'email_address'
         )
         ordered = True
     _links = ma.Hyperlinks({
-        'self': ma.URLFor('api_v1.UserItem', id='<id>'),
-        'collection': ma.URLFor('api_v1.UsersCollection')
+        'self': ma.URLFor('api_v2.UserItem', id='<id>'),
+        'collection': ma.URLFor('api_v2.UsersCollection')
     })

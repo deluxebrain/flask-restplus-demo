@@ -3,7 +3,7 @@ import logging
 from flask import Flask, jsonify
 from flask_restplus import Resource, Namespace
 from flask_restplus._http import HTTPStatus
-from flask_restplus_demo.api.v1.users.schemas import UserSchema
+from flask_restplus_demo.api.v2.users.schemas import UserSchema
 
 log = logging.getLogger(__name__)
 
@@ -25,6 +25,7 @@ class UserItem(Resource):
         user = {
             'id': 1,
             'first_name': 'Bob',
-            'last_name': 'Smith'
+            'last_name': 'Smith',
+            'email_address': 'bob.smith@example.com'
         }
         return UserSchema().dump(user)
