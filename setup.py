@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='workshop-1',
+    name='flask-restplus-demo',
     version='1.0.0',
-    description='Python workshop 1',
+    description='Flask-RESTPlus demo',
     url='',
     author='Matt Caton',
 

@@ -111,3 +111,6 @@ boxes/*
 /.vagrant
 *.log
 .vagrantuser
+
+# Ansible
+*.retry

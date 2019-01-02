@@ -1,66 +1,49 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Bootstrapping of guest machine
-$bootstrap_guest = <<-SCRIPT
-# Ensure that the upgrade is performed non-interactively
-# https://github.com/chef/bento/issues/661
+VAGRANT_API_VERSION = "2"
+
+# Install Ansible on the guest
+$ansible_install_script = <<-SCRIPT
 export DEBIAN_FRONTEND=noninteractive
-sudo apt-get update
-sudo apt-get -y \
-  -o Dpkg::Options::="--force-confdef" \
-  -o Dpkg::Options::="--force-confold" \
-  upgrade
-sudo timedatectl set-timezone "Europe/London"
-# Uncomment to install desktop
-# sudo apt-get -y install ubuntu-desktop
+if ! command -v ansible >/dev/null 2>&1 ; then
+    apt-get update -qq
+    apt-get install -qq software-properties-common
+    apt-add-repository ppa:ansible/ansible
+    apt-get update -qq
+    apt-get install -qq ansible
+fi
 SCRIPT
 
-# Installation of dotfiles on guest machine
-user_name=`git config user.name`.strip
-user_email=`git config user.email`.strip
-$install_dotfiles = <<-SCRIPT
-# Add github to known_hosts else git will return non-zero exit code
-ssh-keyscan -t rsa github.com >> "${HOME}/.ssh/known_hosts" 2>/dev/null
-mkdir -p "Repos/deluxebrain" ; cd "$_" || exit
-git clone git@github.com:deluxebrain/dotfiles.git
-./dotfiles/install -ptrue -o backup \
-    -v user.name=#{user_name},user.email=#{user_email}
-SCRIPT
-
-Vagrant.configure("2") do |config|
-
-    # Guest settings
+Vagrant.configure(VAGRANT_API_VERSION) do |config|
     config.vm.box = "ubuntu/bionic64"
     config.vm.hostname = "flask-restplus-demo"
 
-    # SSH configuration
-    config.ssh.forward_agent = true
-    config.ssh.insert_key = true
-
-    # Networking
     config.vm.network :forwarded_port, id: "flask",
         guest: 5000, host: 5000, auto_correct: false
 
-    # Bootstrap the guest ( as root )
+    # Fix `stdin: is not a tty` warning
+    # https://github.com/hashicorp/vagrant/issues/1673
+    config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+
+    # Install Ansible (root)
     config.vm.provision "shell",
-        inline: $bootstrap_guest,
+        inline: $ansible_install_script,
         privileged: true
 
-    # Install dotfiles ( as vagrant user )
-    config.vm.provision "shell",
-        inline: $install_dotfiles,
-        privileged: false
+    config.vm.provision "ansible_local" do |ansible|
+        ansible_verbose = true
+        ansible.playbook = "provisioning/playbook.yml"
+    end
 
-    # Hypervisor configuration
     config.vm.provider "virtualbox" do |vbox, override|
         vbox.name = config.vm.hostname   # vbox ui title
         vbox.gui = false
-        vbox.memory = 4096
-        vbox.cpus = 2
+        vbox.memory = 1024
+        vbox.cpus = 1
     end
+
     if Vagrant.has_plugin?("vagrant-vbguest")
-        config.vbguest.auto_update = true
-        config.vbguest.no_remote = false
+        config.vbguest.auto_update = false
     end
 end
